@@ -27,8 +27,9 @@ import           Network.MPD.Core.Error
 
 import           Data.Char (isDigit)
 import           Control.Applicative (Applicative(..), (<$>), (<*))
+import           Control.Arrow (second)
 import qualified Control.Exception as E
-import           Control.Monad (ap, unless)
+import           Control.Monad (ap, liftM, unless)
 import           Control.Monad.Error (ErrorT(..), MonadError(..))
 import           Control.Monad.Reader (ReaderT(..), ask)
 import           Control.Monad.State (StateT, MonadIO(..), modify, gets, evalStateT)
@@ -170,16 +171,17 @@ mpdSend str = send' `catchError` handler
 
         go handle = (liftIO . tryIOError $ do
             unless (null str) $ U.hPutStrLn handle str >> hFlush handle
-            getLines handle [])
+            getLines handle)
                 >>= either (\err -> modify (\st -> st { stHandle = Nothing })
                                  >> throwError (ConnectionError err)) return
 
-        getLines :: Handle -> [ByteString] -> IO [ByteString]
-        getLines handle acc = do
-            l <- B.hGetLine handle
-            if "OK" `isPrefixOf` l || "ACK" `isPrefixOf` l
-                then (return . reverse) (l:acc)
-                else getLines handle (l:acc)
+        getLines hdl = go
+          where
+            go = do
+              l <- B.hGetLine hdl
+              if l == "OK" || "ACK" `isPrefixOf` l
+                then return (l, [])
+                else liftM (second (l :)) go
 
 -- | Re-connect and retry for these Exceptions.
 isRetryable :: E.IOException -> Bool
