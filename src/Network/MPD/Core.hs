@@ -181,7 +181,7 @@ mpdSend str = send' `catchError` handler
               l <- B.hGetLine hdl
               if l == "OK" || "ACK" `isPrefixOf` l
                 then return (l, [])
-                else liftM (second (l :)) go
+                else second (l :) <$> go
 
 -- | Re-connect and retry for these Exceptions.
 isRetryable :: E.IOException -> Bool
