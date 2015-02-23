@@ -1,3 +1,12 @@
+* v0.10.0, 2015-02-24
+    - GHC 7.10.1 support (Tobias Brandt)
+    - Fix string quoting issues (Tim Heap)
+    - New commands: `mount*`, `{add,clear}TagId`,
+      `prio*`, `readComments`, `toggleoutput`,
+    - `seek*` accepts fractional seconds
+    - A type `Volume` for volume values
+    - Rename `State` to `PlaybackState`
+
 * v0.9.0, 2014-09-21
     - New commands: `deleteRange`, `moveRange`, `playlistInfoRange`,
       `searchAdd`, `searchAddpl`.
