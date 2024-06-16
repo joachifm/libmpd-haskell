@@ -22,5 +22,4 @@ jobs:
         with:
           hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
           packagesPath: ${{ runner.temp }}/packages
-          docsPath: ${{ runner.temp }}/docs
           publish: false    
