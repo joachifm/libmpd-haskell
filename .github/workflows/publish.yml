@@ -1,0 +1,17 @@
+name: Publish package candidate to Hackage
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: haskell-actions/hackage-publish@v1
+        with:
+          hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
+          packagesPath: ${{ runner.temp }}/packages
+          docsPath: ${{ runner.temp }}/docs
+          publish: false    
