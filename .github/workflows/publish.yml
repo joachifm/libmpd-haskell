@@ -9,6 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     steps:
+      - uses: actions/checkout@v4
+      - uses: haskell-actions/setup@v2
+        id: setup-haskell-cabal
+        with:
+          ghc-version: 'latest'
+          cabal-version: 'latest'
+      - run: |
+          cabal v2-sdist --output-directory='${{ runner.temp }}/packages' all
       - uses: haskell-actions/hackage-publish@v1
         with:
           hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
