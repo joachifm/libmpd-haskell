@@ -1,0 +1,21 @@
+name: Publish package candidate to Hackage
+
+on:
+  push:
+    branches: ['github-actions']
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: haskell-actions/setup@v2
+      - run: |
+          cabal v2-sdist --output-directory='${{ runner.temp }}/packages' all
+      - uses: haskell-actions/hackage-publish@v1
+        with:
+          hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
+          packagesPath: ${{ runner.temp }}/packages
+          publish: false    
